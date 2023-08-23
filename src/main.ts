@@ -53,7 +53,7 @@ async function run() {
     const oldGitDir = process.env.GIT_DIR;
     process.env.GIT_DIR = '/github/workspace/.git';
     await exec.exec(`git archive --output=/github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz --prefix=${name}-${version}/ HEAD`);
-    await exec.exec(`ln -s /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
+    await exec.exec(`ln -sf /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
     process.env.GIT_DIR = oldGitDir;
 
     // Installs additional repositories
@@ -67,7 +67,7 @@ async function run() {
 	}
 
 	// Installs build dependencies
-    await exec.exec(`yum-builddep -y ${specFile.destFullPath}`);
+    await exec.exec(`dnf builddep -y ${specFile.destFullPath}`);
 
     // Execute rpmbuild , -ba generates both RPMS and SPRMS
     try {
@@ -86,7 +86,7 @@ async function run() {
 
     // Get source rpm name , to provide file name, path as output
     let myOutput = '';
-    await cp.exec('ls /github/home/rpmbuild/SRPMS/', (err, stdout, stderr) => {
+    await cp.exec('ls /github/home/rpmbuild/SRPMS/ | grep ".fc"', (err, stdout, stderr) => {
       if (err) {
         //some err occurred
         console.error(err)
@@ -111,7 +111,7 @@ async function run() {
     await exec.exec(`ls -laR rpmbuild/RPMS`);
     
     let myRPMsOutput = '';
-    await cp.exec('find rpmbuild/RPMS -name "*.rpm" | jo -a | jq -r "join(\\",\\")"', (err, stdout, stderr) => {
+    await cp.exec('find rpmbuild/RPMS -name "*.fc*.rpm" | jo -a | jq -r "join(\\",\\")"', (err, stdout, stderr) => {
       if (err) {
         //some err occurred
         console.error(err)

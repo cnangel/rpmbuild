@@ -1,12 +1,12 @@
-# Using CentOS 7 as base image to support rpmbuild (packages will be Dist el7)
-FROM centos:7
+# Using Fedora 38 as base image to support rpmbuild (packages will be Dist fc38)
+FROM fedora:38
 
 # Copying all contents of rpmbuild repo inside container
 COPY . .
 
 # Installing tools needed for rpmbuild , 
 # depends on BuildRequires field in specfile, (TODO: take as input & install)
-RUN yum install epel-release -y && yum install -y rpm-build rpmdevtools gcc make coreutils python git jo jq
+RUN dnf install -y rpm-build rpmdevtools yum-utils gcc make coreutils python git jo jq
 
 # Setting up node to run our JS file
 # Download Node Linux binary
