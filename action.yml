@@ -20,6 +20,8 @@ outputs:
     description: 'name of Source RPM file'
   rpm_dir_path:
     description: 'path to RPMS directory'
+  rpm_dir_names:
+    description: 'name to RPMS files'
   rpm_content_type:
     description: 'Content-type for Upload'
 

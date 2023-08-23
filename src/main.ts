@@ -108,15 +108,31 @@ async function run() {
     await cp.exec(`cp -R /github/home/rpmbuild/RPMS/. rpmbuild/RPMS/`);
 
     await exec.exec(`ls -la rpmbuild/SRPMS`);
-    await exec.exec(`ls -la rpmbuild/RPMS`);
+    await exec.exec(`ls -laR rpmbuild/RPMS`);
     
+    let myRPMsOutput = '';
+    await cp.exec('find rpmbuild/RPMS -name "*.rpm" | jo -a | jq -r "join(\\",\\")"', (err, stdout, stderr) => {
+      if (err) {
+        //some err occurred
+        console.error(err)
+      } else {
+          // the *entire* stdout and stderr (buffered)
+          console.log(`stdout: ${stdout}`);
+          myRPMsOutput = myRPMsOutput+`${stdout}`.trim();
+          console.log(`stderr: ${stderr}`);
+        }
+      });
+
+	// because of asyncing, please sleep 1 second
+    await exec.exec(`sleep 1`);
+
     // set outputs to path relative to workspace ex ./rpmbuild/
     core.setOutput("source_rpm_dir_path", `rpmbuild/SRPMS/`);              // path to  SRPMS directory
     core.setOutput("source_rpm_path", `rpmbuild/SRPMS/${myOutput}`);       // path to Source RPM file
     core.setOutput("source_rpm_name", `${myOutput}`);                      // name of Source RPM file
     core.setOutput("rpm_dir_path", `rpmbuild/RPMS/`);                      // path to RPMS directory
+    core.setOutput("rpm_dir_names", `${myRPMsOutput}`);                    // path to RPMS files
     core.setOutput("rpm_content_type", "application/octet-stream");        // Content-type for Upload
-    
 
 
   } catch (error) {

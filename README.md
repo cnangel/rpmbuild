@@ -22,6 +22,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 - `source_rpm_path`: path to Source RPM file
 - `source_rpm_dir_path`: path to  SRPMS directory
 - `source_rpm_name`: name of Source RPM file
+- `rpm_dir_names`: name of Binary RPM file
 - `rpm_content_type`: Content-type for RPM Upload
 
 This generated RPMS and SRPMS can be used in two ways.
