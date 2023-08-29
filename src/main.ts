@@ -98,15 +98,13 @@ async function run() {
         }
       });
 
-
-    await exec.exec(`sleep 1`);
     // only contents of workspace can be changed by actions and used by subsequent actions 
     // So copy all generated rpms into workspace , and publish output path relative to workspace (/github/workspace)
     await exec.exec(`mkdir -p rpmbuild/SRPMS`);
     await exec.exec(`mkdir -p rpmbuild/RPMS`);
 
-    await exec.exec(`cp /github/home/rpmbuild/SRPMS/${myOutput} rpmbuild/SRPMS`);
     await cp.exec(`cp -R /github/home/rpmbuild/RPMS/. rpmbuild/RPMS/`);
+    await exec.exec(`cp /github/home/rpmbuild/SRPMS/${myOutput} rpmbuild/SRPMS`);
 
     await exec.exec(`ls -la rpmbuild/SRPMS`);
     await exec.exec(`ls -laR rpmbuild/RPMS`);
