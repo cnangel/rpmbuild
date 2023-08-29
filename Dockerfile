@@ -1,7 +1,7 @@
 # Using CentOS 9 as base image to support rpmbuild (packages will be Dist el9)
 FROM cnangel/centos9:action
 
-RUN dnf install -y autoconf libtool automake
+RUN dnf install -y autoconf libtool automake gcc-c++
 
 # All remaining logic goes inside main.js , 
 # where we have access to both tools of this container and 
